@@ -1,0 +1,425 @@
+Technical Guftgu:
+
+How run application:
+in aws -> we create vpc for our infra -> we create multiple subnet -> each subnet we create ec2 -> windows link etc -> if windows iis stall ->Linux need yum install httpd server -> in that server we  create index.html
+
+-if client ask 1000 number ofec2 instance we use automation.
+
+IT infra: server, storage, routing, firewall
+
+Cloud: aws,ec2,vpc
+
+2011 -> aws -> cloudformation automation -> work n aws - we can create 100 instance ->
+
+Mitchell -> azure -> single tool which will automation work on all cloud -> 2014 terraform -> automation will work on any cloud 
+
+terraform -extra terrestrial activity ->  makes planet just like earth
+
+azure - ARM template
+GCP-deployment manager
+
+it is not vendor specific -> Infrastrure as code - whatever I wrote in code it will make infra. - open source  -written in go language by google -> useful multicloud and hybrid cloud(public +private cloud) -similar to json, human readable ->it uses  HCL language- declarative aopproach
+
+IAC- managing(add remove change) & provision(allocate, provide) of infrastrure through code.
+
+
+IAC two types:
+Imperative approach: everything do systematic as step by step eg. cloudformation
+
+declarative approach: no need of sequence, just tell what you want in what quantity
+eg terraform
+
+diff bet terraform & ansible:
+
+ansible- design to install & manage sw on exsitsing server
+
+terraform:Design to provision server and iinfra.
+
+if we create server then only we only can install sw. 
+
+first terraform create ec2 instance -> thenansible will have to call and then he can install sw
+
+benefeit:
+simple lang, readable
+easily extensible with plugins
+keep track of your infra in state
+reuse
+------------------------------------
+C:\Program Files\Terraform
+
+Install terraform in windows:
+1. install terraform- terraform.io - download in c/ program file / create folder terraform/ extract terraform download file - copy file path -> notepad paste -> search environment variable -> path -> paste that path -> select- edit-> new -> cmd -> # terraform version
+
+2. bash shell/vs code/git- download git- git bash will open - u can write Linux command
+
+3. aws acc create
+
+terraform should connect with aws cloud.
+for that aws plugins should be at terraform
+-------------------------------------
+
+provider - 
+responsible api intraction. api means communication. provide uses plugin. if u want provide on terraform u need to run- #terraform init - this will download any plugin we need fo our provider.
+
+
+Commands:
+1.terraform init -
+used to initialise working directory containing terraform conf files
+
+2.terraform plan- procedure, use to create execution plan
+
+3.terraform validate- it will check is there error
+
+4.terraform apply- start to work, used to apply the changes required to reach the desired state. Means Tf will connect with provider,  TF will login aws, TF will create resource 
+
+5.Terraform destroy- to delete
+
+
+HCL syntax:
+readble, it has 3 parts: 
+1.block:  it used for group expression, argument and other block into labelable structure, using bracket 
+
+2.arguments: key- value pair
+<block type> "<block label>" "<block lale name>"{
+<identifier> =<expression>
+
+3.expression: compute values like string, numeric, name
+
+
+
+
+
+Terraform basic cmds and HCL syntax:
+
+1. connect terraform to aws provider
+
+2.open terraform -> login aws-> to acces we need access key , secret key
+
+3.terraform through creation of resources EC2
+
+
+steps:
+#mkdire terraform
+#cd terraform
+#mkdir dir1
+#cd dir1
+will keep everything inside dir1
+#vi file1.tf
+
+press Icode to connect aws to TF
+got to registry.terraform.io hashicorp
+
+paste section in file1
+terraform {
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 5.0"
+    }
+  }
+}
+
+on cmd
+paste code
+
+press escape :wq
+
+#ls -a
+
+#terraform init
+successfully initialise
+
+#ls -a
+new files will appear, allplugin come
+
+#cat to view any file  
+
+#cd dir1
+
+login aws:
+go to aws->IAM->users -> add users -> terraformuser ->programmatic access ->set permission ->attach existingpolicies -> administrator access -> create user -> click on username- security creditials - create access key- download file acces n secret key. 
+
+
+go to gitbash
+registry terraform io site-> secion authentication n configuration -> usage ->copy
+provider "aws" {
+  region     = "us-east-2"
+  access_key = "my-access-key"
+  secret_key = "my-secret-key"
+}
+Copy
+Other-> open file1.tf
+
+#vi file1.tf
+press I
+
+enter
+enter
+
+paste that usage part
+
+resource "aws_instance" "s1" {
+  ami           = "ami-0fae88c1e6794aa17"
+  instance_type = "t2.micro"
+
+  tags = {
+    Name = "server"
+  }
+}
+
+-provide name should same as earlier, we 
+-can cange region from aws
+-access key -> download access key copy n paste
+-secret key -> copy paste
+
+we logged in aws with the help of terraform
+esc :wq
+
+#terraform plan
+no change so need to apply
+
+#terraform apply
+apply complete
+
+visit login aws to see that go to 
+#vi file.tf
+pres I
+
+go to aws -> create ec2 instance -> though AMI id we will know which os willdonload -> copy AMI id(ami-0fae88c1e6794aa17), t2.micro pahije, 
+
+we need code to write in file to create ec2 instance
+go to - registry.terraform io -> section EC2 -> aws instance -> copy small code should having ai, instance type tags copy it- go to bash -> in open file paste it.change  local name -> tags mdhe name =server 1, paste ami id, paste instance type
+
+esc :wq
+
+to check if it right
+#terraform validate
+ --plan 1 to add
+
+it will create automatic plan:
+#terraform plante
+
+
+#terraform apply
+yes
+instmace creating
+
+do refresh on aws u cam see new instance.
+
+to delete instance or everything: 
+#terraform destroy
+-plan to destroy
+yes
+
+go to aws refresh u can see it will terminate
+
+How to create multiple:
+#vi file1.tf
+press I
+
+last code copy paste just change server name and lable
+esc :wq
+
+#terraform plan
+mulitiple files created
+
+#terraform apply
+yes
+
+go to aws - refrsh-u can see multiple instances
+
+select instance -> connect -> u will get ip -> (copy paste in google )
+#sudo su
+#yum install httpd
+y 
+
+appache server will install
+
+crete one file
+#vi /var/ww/html/index.html
+press I
+type smthing
+
+esc :wq
+
+#server httpd start 
+
+copy that ip again paste on google .
+
+
+how to delete access key:
+go to user in aws-security creditials-make inactive
+
+
+
+best:
+steps:
+#mkdire terraform
+#cd terraform
+#mkdir dir1
+#cd dir1
+will keep everything inside dir1
+
+step1:
+#vi file1.tf
+
+press I 
+
+step 2
+code to connect aws to TF
+got to registry.terraform.io hashicorp
+
+paste section in file1
+terraform {
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 5.0"
+    }
+  }
+}
+
+
+step 3: create user
+#cd dir1
+
+login aws:
+go to aws->IAM->users -> add users -> terraformuser ->programmatic access ->set permission ->attach existingpolicies -> administrator access -> create user -> click on username- security creditials - create access key- download file acces n secret key. 
+
+
+step 4: select region, download keys n enter 
+go to gitbash
+registry terraform io site-> secion authentication n configuration -> usage ->copy
+provider "aws" {
+  region     = "us-east-2"
+  access_key = "my-access-key"
+  secret_key = "my-secret-key"
+}
+
+
+step 5:validate plan & apply
+#terraform plan
+no change so need to apply
+
+#terraform apply
+apply complete
+
+visit login aws to see that go to 
+#vi file.tf
+pres I
+
+
+step 6: copy ami id, instance type
+go to aws -> create ec2 instance -> though AMI id we will know which os willdonload -> copy AMI id(ami-0fae88c1e6794aa17), t2.micro pahije, 
+
+resource "aws_instance" "web" {
+  ami           = data.aws_ami.ubuntu.id
+  instance_type = "t3.micro"
+
+  tags = {
+    Name = "HelloWorld"
+  }
+}
+
+- go to bash -> in open file paste it.change  local name -> tags mdhe name =server 1, paste ami id, paste instance type
+
+esc :wq
+
+to check if it right
+
+#terraform validate
+ --plan 1 to add
+
+it will create automatic plan:
+#terraform plant
+
+
+#terraform apply
+yes
+instmace creating
+
+do refresh on aws u cam see new instance.
+
+to delete instance or everything: 
+#terraform destroy
+-plan to destroy
+yes
+
+
+
+ste 7: connect server
+
+ select instance -> connect -> u will get ip -> (copy paste in google )
+#sudo su
+#yum install httpd
+y 
+
+appache server will install
+
+crete one file
+#vi /var/ww/html/index.html
+press I
+type smthing
+
+esc :wq
+
+#server httpd start 
+
+copy that ip again paste on google .
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
